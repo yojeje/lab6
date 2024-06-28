@@ -261,3 +261,89 @@ var Kais_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "protobuf.proto",
 }
+
+// ConflictosClient is the client API for Conflictos service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type ConflictosClient interface {
+	ResolverConsistencia(ctx context.Context, in *ConsistenciaRequest, opts ...grpc.CallOption) (*Direccion, error)
+}
+
+type conflictosClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewConflictosClient(cc grpc.ClientConnInterface) ConflictosClient {
+	return &conflictosClient{cc}
+}
+
+func (c *conflictosClient) ResolverConsistencia(ctx context.Context, in *ConsistenciaRequest, opts ...grpc.CallOption) (*Direccion, error) {
+	out := new(Direccion)
+	err := c.cc.Invoke(ctx, "/grpc.Conflictos/ResolverConsistencia", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// ConflictosServer is the server API for Conflictos service.
+// All implementations must embed UnimplementedConflictosServer
+// for forward compatibility
+type ConflictosServer interface {
+	ResolverConsistencia(context.Context, *ConsistenciaRequest) (*Direccion, error)
+	mustEmbedUnimplementedConflictosServer()
+}
+
+// UnimplementedConflictosServer must be embedded to have forward compatible implementations.
+type UnimplementedConflictosServer struct {
+}
+
+func (UnimplementedConflictosServer) ResolverConsistencia(context.Context, *ConsistenciaRequest) (*Direccion, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResolverConsistencia not implemented")
+}
+func (UnimplementedConflictosServer) mustEmbedUnimplementedConflictosServer() {}
+
+// UnsafeConflictosServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to ConflictosServer will
+// result in compilation errors.
+type UnsafeConflictosServer interface {
+	mustEmbedUnimplementedConflictosServer()
+}
+
+func RegisterConflictosServer(s grpc.ServiceRegistrar, srv ConflictosServer) {
+	s.RegisterService(&Conflictos_ServiceDesc, srv)
+}
+
+func _Conflictos_ResolverConsistencia_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ConsistenciaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ConflictosServer).ResolverConsistencia(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/grpc.Conflictos/ResolverConsistencia",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ConflictosServer).ResolverConsistencia(ctx, req.(*ConsistenciaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Conflictos_ServiceDesc is the grpc.ServiceDesc for Conflictos service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Conflictos_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "grpc.Conflictos",
+	HandlerType: (*ConflictosServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "ResolverConsistencia",
+			Handler:    _Conflictos_ResolverConsistencia_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "protobuf.proto",
+}
